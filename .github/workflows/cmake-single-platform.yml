@@ -27,6 +27,9 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: recursive
+    - uses: eWaterCycle/setup-singularity@v7
+      with:
+        singularity-version: 3.8.3
     
     - name: Setup MPI
       uses: mpi4py/setup-mpi@v1
@@ -45,4 +48,9 @@ jobs:
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: mpirun -n 2 build/test_multiplication -C ${{env.BUILD_TYPE}}
+    - name: Clean-up
+      run: rm -rf build
+    - name: Contenairize
+      run: singularity build --fakeroot container.sif singularity-definitions.def
+      
 
