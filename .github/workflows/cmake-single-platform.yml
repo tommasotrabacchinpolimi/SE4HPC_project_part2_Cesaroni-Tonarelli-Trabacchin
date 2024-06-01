@@ -55,8 +55,8 @@ jobs:
     - name: sshpass setup
       run: sudo apt-get install sshpass
     - name: Transfer
-      run:  sshpass -p "${{secrets.G100_PASS_SWENG}}" scp ./job.sh ${{secrets.G100_USER_SWENG}}@login.g100.cineca.it:/g100/home/usertrain/${{secrets.G100_USER_SWENG}}/SWENG-Ces-Ton-Trab
+      run:  sshpass -p "${{secrets.G100_PASS_SWENG}}"  scp -o "StrictHostKeyChecking=no"  ./container.sif ${{secrets.G100_USER_SWENG}}@login.g100.cineca.it:/g100/home/usertrain/${{secrets.G100_USER_SWENG}}/SWENG-Ces-Ton-Trab
     - name: Remote Run
-      run: sshpass -p "${{secrets.G100_PASS_SWENG}}" ssh ${{secrets.G100_USER_SWENG}}@login.g100.cineca.it 'sbatch SWENG-Ces-Ton-Trab/job.sh'
+      run: sshpass -p "${{secrets.G100_PASS_SWENG}}" ssh -o "StrictHostKeyChecking=no" ${{secrets.G100_USER_SWENG}}@login.g100.cineca.it 'sbatch SWENG-Ces-Ton-Trab/job.sh'
      
 
