@@ -52,5 +52,9 @@ jobs:
       run: rm -rf build
     - name: Contenairize
       run: singularity build --fakeroot container.sif singularity-definitions.def
-      
+    - name: Transfer
+      run:  sshpass -p "${{secrets.G100_PASS_SWENG}}" scp ./job.sh ${{secrets.G100_USER_SWENG}}@login.g100.cineca.it:/g100/home/usertrain/${{secrets.G100_USER_SWENG}}/SWENG-Ces-Ton-Trab
+    - name: Remote Run
+      run: sshpass -p "${{secrets.G100_PASS_SWENG}}" ssh ${{secrets.G100_USER_SWENG}}@login.g100.cineca.it 'sbatch SWENG-Ces-Ton-Trab/job.sh'
+     
 
