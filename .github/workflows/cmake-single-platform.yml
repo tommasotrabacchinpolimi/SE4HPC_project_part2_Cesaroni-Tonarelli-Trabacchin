@@ -54,8 +54,11 @@ jobs:
       run: singularity build --fakeroot container.sif singularity-definitions.def
     - name: sshpass setup
       run: sudo apt-get install sshpass
-    - name: Transfer
+    - name: Container Transfer
       run:  sshpass -p "${{secrets.G100_PASS_SWENG}}"  scp -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null"  ./container.sif ${{secrets.G100_USER_SWENG}}@login.g100.cineca.it:/g100/home/usertrain/${{secrets.G100_USER_SWENG}}/SWENG-Ces-Ton-Trab
+    - name: Sbatch script Transfer
+      run:  sshpass -p "${{secrets.G100_PASS_SWENG}}"  scp -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null"  ./job.sh ${{secrets.G100_USER_SWENG}}@login.g100.cineca.it:/g100/home/usertrain/${{secrets.G100_USER_SWENG}}/SWENG-Ces-Ton-Trab
+    
     - name: Remote Run
       run: sshpass -p "${{secrets.G100_PASS_SWENG}}" ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" ${{secrets.G100_USER_SWENG}}@login.g100.cineca.it 'sbatch SWENG-Ces-Ton-Trab/job.sh'
      
