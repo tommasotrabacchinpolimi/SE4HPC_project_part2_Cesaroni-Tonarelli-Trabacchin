@@ -30,7 +30,6 @@ jobs:
     - uses: eWaterCycle/setup-singularity@v7
       with:
         singularity-version: 3.8.3
-    - uses: matheusvanzan/sshpass-action@v2
     
     - name: Setup MPI
       uses: mpi4py/setup-mpi@v1
@@ -53,6 +52,8 @@ jobs:
       run: rm -rf build
     - name: Contenairize
       run: singularity build --fakeroot container.sif singularity-definitions.def
+    - name: sshpass setup
+      run: sudo apt-get install sshpass
     - name: Transfer
       run:  sshpass -p "${{secrets.G100_PASS_SWENG}}" scp ./job.sh ${{secrets.G100_USER_SWENG}}@login.g100.cineca.it:/g100/home/usertrain/${{secrets.G100_USER_SWENG}}/SWENG-Ces-Ton-Trab
     - name: Remote Run
