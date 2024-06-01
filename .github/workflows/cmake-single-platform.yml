@@ -48,7 +48,8 @@ jobs:
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: mpirun -n 2 build/test_multiplication -C ${{env.BUILD_TYPE}}
-
+    - name: Clean-up
+      run: rm -rf build
     - name: Contenairize
       run: singularity build --fakeroot container.sif singularity-definitions.def
       
