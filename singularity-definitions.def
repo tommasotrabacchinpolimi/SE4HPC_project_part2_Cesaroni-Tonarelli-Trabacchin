@@ -7,6 +7,7 @@ From: ubuntu:22.04
 %post
 apt-get update && apt install build-essential -y && apt-get install -y openmpi-bin openmpi-doc libopenmpi-dev && apt-get install -y cmake
 cd /app
+
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
 
