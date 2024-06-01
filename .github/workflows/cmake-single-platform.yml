@@ -30,6 +30,7 @@ jobs:
     - uses: eWaterCycle/setup-singularity@v7
       with:
         singularity-version: 3.8.3
+    - uses: matheusvanzan/sshpass-action@v2
     
     - name: Setup MPI
       uses: mpi4py/setup-mpi@v1
