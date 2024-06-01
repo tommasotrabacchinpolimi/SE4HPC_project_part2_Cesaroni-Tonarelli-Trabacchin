@@ -7,4 +7,4 @@
 
 
 module load profile/advanced
-srun singularity exec container.sif /app/build/test_multiplication
+srun singularity exec SWENG-Ces-Ton-Trab/container.sif /app/build/test_multiplication
