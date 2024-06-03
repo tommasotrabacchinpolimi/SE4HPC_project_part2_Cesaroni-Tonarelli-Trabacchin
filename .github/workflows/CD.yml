@@ -3,13 +3,7 @@
 name: CD
 
 on:
-  push:
-    branches: [ "main" ]
-    paths-ignore:
-        - '**.txt'
-        - '**.md'
-        - '**.gitignore'
-        - '**.gitmodules'
+  workflow_dispatch:
         
 
 env:
