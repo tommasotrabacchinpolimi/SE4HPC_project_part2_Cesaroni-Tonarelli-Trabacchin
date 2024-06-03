@@ -1,11 +1,13 @@
 #include "matrix_multiplication.h"
+#include <fstream>
 #include <iostream>
 #include <vector>
-#include <fstream>
+#include <time.h>
+#include <stdlib.h>
 #include <gtest/gtest.h>
 #include <mpi.h>
 
-void executeTest(std::vector<std::vector<int>>& A, std::vector<std::vector<int>>& B, std::vector<std::vector<int>>& expected){
+std::vector<std::vector<int>> executeTest(std::vector<std::vector<int>>& A, std::vector<std::vector<int>>& B){
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -40,29 +42,155 @@ void executeTest(std::vector<std::vector<int>>& A, std::vector<std::vector<int>>
     std::vector<std::vector<int>> C(rowsA, std::vector<int>(colsB, 0));
     multiplyMatrices(A, B, C, rowsA, colsA, colsB);
 
-    ASSERT_EQ(C, expected) << "Matrix multiplication test failed! :(((((";
+    return C;
 }
 
 
 // ######################### Source code of multiplyMatrices in src/matrix_mult
 
-TEST(MatrixMultiplicationTest, TestMultiplyMatrices) {
-    std::vector<std::vector<int>> A = {
-        {1, 2, 3},
-        {4, 5, 6}
-    };
-    std::vector<std::vector<int>> B = {
-        {7, 8},
-        {9, 10},
-        {11, 12}
-    };
-    std::vector<std::vector<int>> C(2, std::vector<int>(2, 0));
+TEST(MatrixMultiplicationTest, TestAssociativePropertyMatrices) {
+    int n = 10;
+    std::srand((unsigned)std::time(NULL));
+    std::vector<std::vector<int>> A(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> B(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> C(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> temp(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> result1(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> result2(n, std::vector<int>(n, 0));
 
-    std::vector<std::vector<int>> expected = {
-            {58, 64},
-            {139, 154}
-    };
-    executeTest(A, B, expected);
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            A[i][j] = std::rand() % 10;
+            B[i][j] = std::rand() % 10;
+            C[i][j] = std::rand() % 10;
+        }
+    }
+
+    // (AB)C
+    temp = executeTest(A, B);
+    result1 = executeTest(temp, C);
+    // A(BC)
+    temp = executeTest(B, C);
+    result2 = executeTest(A, temp);
+
+    ASSERT_EQ(result1, result2) << "Associativity Matrix multiplication test failed! :(((()";
+}
+
+TEST(MatrixMultiplicationTest, TestIdentityElementMatrices) {
+    int n = 9;
+    std::srand((unsigned)std::time(NULL));
+    std::vector<std::vector<int>> A(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> I(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> result1(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> result2(n, std::vector<int>(n, 0));
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            A[i][j] = std::rand() % 10;
+            if(i==j){
+                I[i][j] = 1;
+            }
+        }
+    }
+    // AI
+    result1 = executeTest(A, I);
+    // IA
+    result2 = executeTest(I, A);
+
+    ASSERT_EQ(result1, result2) << "Identity Element Matrix multiplication test failed! :(((()";
+}
+
+TEST(MatrixMultiplicationTest, TestNullElementMatrices) {
+    int n = 8;
+    std::srand((unsigned)std::time(NULL));
+    std::vector<std::vector<int>> A(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> zero(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> result1(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> result2(n, std::vector<int>(n, 0));
+
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            A[i][j] = std::rand() % 10;
+        }
+    }
+
+    result1 = executeTest(A, zero);
+
+    ASSERT_EQ(result1, zero) << "Null Element Matrix multiplication test failed! :(((()";
+}
+
+TEST(MatrixMultiplicationTest, TestRandom1Matrices) {
+    int n = 5;
+    std::vector<std::vector<int>> A(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> B(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> C(n, std::vector<int>(n, 0));
+
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            A[i][j]=i+1;
+            if(i==j){
+                B[i][j]=1;
+            }
+        }
+    }
+
+    C = executeTest(A, B);
+
+    ASSERT_EQ(C, A) << "Random1 Element Matrix multiplication test failed! :(((()";
+}
+
+TEST(MatrixMultiplicationTest, TestRandom2Matrices) {
+    int n = 8;
+    std::vector<std::vector<int>> A(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> B(n, std::vector<int>(n, 0));
+    std::vector<std::vector<int>> C(n, std::vector<int>(n, 0));
+
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            A[i][j]=j+1;
+            if(i==j){
+                B[i][j]=1;
+            }
+        }
+    }
+
+    C = executeTest(A, B);
+
+    ASSERT_EQ(C, A) << "Random2 Element Matrix multiplication test failed! :(((()";
+}
+
+TEST(MatrixMultiplicationTest, TestRandomRectangularMatrices) {
+    size_t rowA = 8;
+    size_t colA = 5;
+    size_t colB = 8;
+    std::srand((unsigned)std::time(NULL));
+    std::vector<std::vector<int>> A(rowA, std::vector<int>(colA, 0));
+    std::vector<std::vector<int>> B(colA, std::vector<int>(colB, 0));
+    std::vector<std::vector<int>> C(rowA, std::vector<int>(colB, 0));
+    std::vector<std::vector<int>> expected(rowA, std::vector<int>(colB, 0));
+
+    for(int i = 0; i < rowA; i++){
+        for(int j = 0; j < colA; j++){
+            A[i][j] = std::rand();
+        }
+    }
+    for(int i = 0; i < colA; i++){
+        for(int j = 0; j < colB; j++){
+            if(i == j){
+                B[i][j] = 1;
+            }
+        }
+    }
+    for(int i = 0; i < rowA; i++){
+        for(int j = 0; j < colB; j++){
+            if(j < colA){
+                expected[i][j] = A[i][j];
+            }
+        }
+    }
+
+    C = executeTest(A, B);
+
+    ASSERT_EQ(C, expected) << "Rectangular Matrix multiplication test failed! :(((()";
 }
 
 int main(int argc, char **argv) {
