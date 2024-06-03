@@ -7,6 +7,9 @@
 #include <gtest/gtest.h>
 #include <mpi.h>
 
+/*
+ * Method to automatically execute tests
+ */
 std::vector<std::vector<int>> executeTest(std::vector<std::vector<int>>& A, std::vector<std::vector<int>>& B){
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -48,6 +51,9 @@ std::vector<std::vector<int>> executeTest(std::vector<std::vector<int>>& A, std:
 
 // ######################### Source code of multiplyMatrices in src/matrix_mult
 
+/*
+ * Tests copied form SE4HPC_project_part1_Cesaroni-Tonarelli-Trabacchin
+ */
 TEST(MatrixMultiplicationTest, TestAssociativePropertyMatrices) {
     int n = 10;
     std::srand((unsigned)std::time(NULL));
