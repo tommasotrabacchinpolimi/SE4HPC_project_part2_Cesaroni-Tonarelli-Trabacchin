@@ -40,8 +40,8 @@ int main(int argc, char** argv) {
     std::vector<std::vector<int>> A, B;
 
     if (rank == 0) {
-        readMatrixFromFile("../matrixA.txt", A, rowsA, colsA);
-        readMatrixFromFile("../matrixB.txt", B, rowsB, colsB);
+        readMatrixFromFile("/app/matrixA.txt", A, rowsA, colsA);
+        readMatrixFromFile("/app/matrixB.txt", B, rowsB, colsB);
     }
 
     
