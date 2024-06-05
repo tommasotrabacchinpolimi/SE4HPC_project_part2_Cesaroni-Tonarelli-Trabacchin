@@ -1,5 +1,15 @@
 # SE4HPCproject
 
+## Our implementation
+
+**Testing** The tests have been implemented with MPI in order to test the parallelization correctness alongside the 
+matrix multiplication implementation correctness.
+
+**Workflows** 
+Two workflows have been implemented:
+- The CI automates the testing when a push to the main branch is done;
+- The CD automates both the testing and the subsequent containerization and the transfer and execution on the cluster Galileo100. In order to avoid wasting resources everytime a push is performed, this workflow is not executed automatically but needs to be triggered manually. 
+
 ## Step 2 -- From build to release and manual job execution 
 
 Focus now on the correct implementation of the matrix multiplication you
